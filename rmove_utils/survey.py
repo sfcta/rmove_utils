@@ -37,5 +37,34 @@ class Survey(object):
             self._locations = Locations(os.path.join(root, location_file))
             self.locations = self._locations.human_readable()
         
+        self.data_dictionary = self._create_data_dictionary()
         
+    def _create_data_dictionary(self):
+        d = dict(self._households.descriptions)
+        d.update(self._persons.descriptions)
+        d.update(self._trips.descriptions)
+        d.update(self._days.descriptions)
+        d.update(self._vehicles.descriptions)
+        d.update(self._locations.descriptions)
+        self.descriptions = d    
         
+        v = dict(self._households.value_lookup)
+        v.update(self._persons.value_lookup)
+        v.update(self._trips.value_lookup)
+        v.update(self._days.value_lookup)
+        v.update(self._vehicles.value_lookup)
+        v.update(self._locations.value_lookup)
+        self.values = v
+        
+        dd = {}
+        for k, v in self.descriptions.items():
+            dd[k] = self._create_data_dictionary_entry(k, v, self.values[k] if k in self.values.keys() else None)
+        return dd
+            
+    def _create_data_dictionary_entry(self, name, description, values=None):
+        s = 'field name: {}\n\n'.format(name)
+        s += 'description: {}\n\n'.format(description)
+        if isinstance(values, dict):
+            for k, v in values.items():
+                s += '{:5}: {}\n'.format(k, v)
+        return s
