@@ -49,6 +49,13 @@ class Config():
         Vehicles.value_lookup = Config._read_value_lookup(Vehicles.expected_columns, config_dfs[vkey])
         Locations.value_lookup = Config._read_value_lookup(Locations.expected_columns, config_dfs[vkey])
         
+        Households.descriptions = Config._read_descriptions('Households', config_dfs[fkey])
+        Persons.descriptions = Config._read_descriptions('Persons', config_dfs[fkey])
+        Trips.descriptions = Config._read_descriptions('Trips', config_dfs[fkey])
+        Days.descriptions = Config._read_descriptions('Days', config_dfs[fkey])
+        Vehicles.descriptions = Config._read_descriptions('Vehicles', config_dfs[fkey])
+        Locations.descriptions = Config._read_descriptions('Locations', config_dfs[fkey])
+        
         Households.error_code_lookup = Config._read_value_lookup(['All categorical variables'], config_dfs[vkey])['All categorical variables']
         Persons.error_code_lookup = Config._read_value_lookup(['All categorical variables'], config_dfs[vkey])['All categorical variables']
         Trips.error_code_lookup = Config._read_value_lookup(['All categorical variables'], config_dfs[vkey])['All categorical variables']
@@ -66,3 +73,8 @@ class Config():
         df = df.loc[df['variable'].isin(expected_columns)]
         return {key: {v['value']: v['label'] for k, v in values.iterrows()} 
                     for key, values in df.groupby('variable')}
+                    
+    def _read_descriptions(dataset, df):
+        df = df.loc[df[Config.DATASET_TO_KEY[dataset]].eq(1), :]
+        return {row['variable']: row['description'] for idx, row in df.iterrows()} 
+        

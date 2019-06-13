@@ -10,6 +10,7 @@ import pandas as pd
 class Base(object):
     expected_columns = []
     value_lookup = {}
+    descriptions = {}
     error_code_lookup = {}
     
     def __init__(self, file_name=None, sep='\t', error_level=0):
