@@ -68,3 +68,9 @@ class Survey(object):
             for k, v in values.items():
                 s += '{:5}: {}\n'.format(k, v)
         return s
+        
+    def summarize(self, household_weights=None, person_weights=None, day_weights=None, trip_weights=None, human_readable=True, append=True):
+        self._households.summarize(human_readable, household_weight, append)
+        self._persons.summarize(human_readable, person_weight, append)
+        self._days.summarize(human_readable, day_weight, append)
+        self._trips.summarize(human_readable, trip_weight, append)
