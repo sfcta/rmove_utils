@@ -29,7 +29,8 @@ class Config():
     def from_excel(path='.', 
                    config_file='2019-02-28_Bay_Area_TNC_Codebook.xlsx', 
                    fields_sheet_name='Overview', 
-                   values_sheet_name='Values'):
+                   values_sheet_name='Values',
+                   categorical_variables_key='_All categorical variables_'):
         fkey = fields_sheet_name
         vkey = values_sheet_name
         config_dfs = pd.read_excel(os.path.join(path,config_file), 
@@ -56,12 +57,12 @@ class Config():
         Vehicles.descriptions = Config._read_descriptions('Vehicles', config_dfs[fkey])
         Locations.descriptions = Config._read_descriptions('Locations', config_dfs[fkey])
         
-        Households.error_code_lookup = Config._read_value_lookup(['All categorical variables'], config_dfs[vkey])['All categorical variables']
-        Persons.error_code_lookup = Config._read_value_lookup(['All categorical variables'], config_dfs[vkey])['All categorical variables']
-        Trips.error_code_lookup = Config._read_value_lookup(['All categorical variables'], config_dfs[vkey])['All categorical variables']
-        Days.error_code_lookup = Config._read_value_lookup(['All categorical variables'], config_dfs[vkey])['All categorical variables']
-        Vehicles.error_code_lookup = Config._read_value_lookup(['All categorical variables'], config_dfs[vkey])['All categorical variables']
-        Locations.error_code_lookup = Config._read_value_lookup(['All categorical variables'], config_dfs[vkey])['All categorical variables']
+        Households.error_code_lookup = Config._read_value_lookup([categorical_variables_key], config_dfs[vkey])[categorical_variables_key]
+        Persons.error_code_lookup = Config._read_value_lookup([categorical_variables_key], config_dfs[vkey])[categorical_variables_key]
+        Trips.error_code_lookup = Config._read_value_lookup([categorical_variables_key], config_dfs[vkey])[categorical_variables_key]
+        Days.error_code_lookup = Config._read_value_lookup([categorical_variables_key], config_dfs[vkey])[categorical_variables_key]
+        Vehicles.error_code_lookup = Config._read_value_lookup([categorical_variables_key], config_dfs[vkey])[categorical_variables_key]
+        Locations.error_code_lookup = Config._read_value_lookup([categorical_variables_key], config_dfs[vkey])[categorical_variables_key]
         
     def _read_expected_columns(dataset, df):
         df = df.loc[df[Config.DATASET_TO_KEY[dataset]].eq(1), Config.FIELD_COLUMNS]
