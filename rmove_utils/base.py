@@ -78,9 +78,12 @@ class Base(object):
         cols = ['size']
         if human_readable:
             cols = ['name'] + cols
+            
         if weights != None:
             weights = [weights] if isinstance(weights, str) else weights
             cols = cols + weights
+        else:
+            weights = []
             
         for key, values in self.value_lookup.items():
             values.update(self.error_code_lookup)

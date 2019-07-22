@@ -70,7 +70,7 @@ class Survey(object):
         return s
         
     def summarize(self, household_weights=None, person_weights=None, day_weights=None, trip_weights=None, human_readable=True, append=True):
-        self._households.summarize(human_readable, household_weight, append)
-        self._persons.summarize(human_readable, person_weight, append)
-        self._days.summarize(human_readable, day_weight, append)
-        self._trips.summarize(human_readable, trip_weight, append)
+        self._households.summarize(human_readable, household_weights, append)
+        self._persons.summarize(human_readable, person_weights, append)
+        self._days.summarize(human_readable, day_weights, append)
+        self._trips.summarize(human_readable, trip_weights, append)
