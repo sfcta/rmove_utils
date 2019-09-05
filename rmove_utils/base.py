@@ -85,6 +85,7 @@ class Base(object):
         else:
             weights = []
             
+        # categorical variables with a value in the lookups
         for key, values in self.value_lookup.items():
             values.update(self.error_code_lookup)
             if append:
@@ -109,6 +110,40 @@ class Base(object):
             for weight in weights:
                 df[weight] = self.data.groupby(key).agg({weight:'sum'})
             d[key] = df.copy()
+        
+        # continuous or other variables without a value in the lookup
+        for col in self.data.columns:
+            if col in self.value_lookup.keys():
+                continue
+            
+            if not pd.api.types.is_numeric_dtype(self.data.dtypes[col]):
+                continue
+                
+            if append:
+                try:
+                    df = d[col]
+                except:
+                    df = pd.DataFrame(index=[-9999,-1,0,1], columns=cols)
+            else:
+                df = pd.DataFrame(index=[-9999,-1,0,1], columns=cols)
+            
+            if human_readable:
+                try:
+                    df['name'] = df.index.map(lambda x: {-9999:'Missing', -1:'Min', 0:'Mean', 1:'Max'}[x])
+                except:
+                    print(df)
+                
+            df.loc[-9999,'size'] = (1 * pd.isnull(self.data[col])).sum()
+            df.loc[-1,'size'] = self.data[col].min()
+            df.loc[0,'size'] = self.data[col].mean()
+            df.loc[1,'size'] = self.data[col].max()
+            
+            for weight in weights:
+                df.loc[-9999,weight] = (1 * pd.isnull(self.data[col])).sum()
+                df.loc[-1,weight] = (self.data[weight] * self.data[col].min()).sum() / self.data[weight].sum()
+                df.loc[0,weight] = (self.data[weight] * self.data[col].mean()).sum() / self.data[weight].sum()
+                df.loc[1,weight] = (self.data[weight] * self.data[col].max()).sum() / self.data[weight].sum()
+        self.summary = d
         return d
     
     def multifield_classification(self, fields):
