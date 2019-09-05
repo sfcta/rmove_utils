@@ -69,6 +69,34 @@ class Survey(object):
                 s += '{:5}: {}\n'.format(k, v)
         return s
         
+    def link_trips(self, linked_trip_id=None, sortby=None, groupby=None, change_mode_field=None, change_mode_value=None, mode_field=None):
+        self._linked_trips = LinkedTrips(self._trips, 
+                                         linked_trip_id,
+                                         sortby,
+                                         groupby,
+                                         change_mode_field,
+                                         change_mode_value,
+                                         mode_field)
+    
+    def filter_by(self, filter_what, by_what, how):
+        '''
+        Manually filter one of the files and filter the rest based on it.
+        '''
+        raise NotImplementedError()
+        
+    def filter_complete_days(self):
+        # TODO make this generic
+        # get the trips for these persons for all days they completed
+        self._days.data = self._days.data.loc[self._days.data['day_complete'].eq(1)]
+
+        # get the records for these persons for all days they completed
+        self._households.data = self._households.data.loc[self._households.data['hh_id'].isin(self._days.data['hh_id'])]
+        self._persons.data = self._persons.data.loc[self._persons.data['person_id'].isin(self._days.data['person_id'])]
+        self._trips.data = pd.merge(self._trips.data, self._days.data.loc[:,['hh_id','person_id','day_num','day_complete']])
+        self._trips.data = self._trips.data.loc[self._trips.data['day_complete'].eq(1)]
+        self._locations.data = self._locations.data.loc[self._locations.data['trip_id'].isin(self._trips.data['trip_id'])]
+        
+        
     def summarize(self, household_weights=None, person_weights=None, day_weights=None, trip_weights=None, human_readable=True, append=True):
         self._households.summarize(human_readable, household_weights, append)
         self._persons.summarize(human_readable, person_weights, append)

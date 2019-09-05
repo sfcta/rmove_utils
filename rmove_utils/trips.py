@@ -18,6 +18,12 @@ class Trips(Base):
         super().__init__(file_name, sep, error_level)
         self._geos = {}
         
+        self.all_modes = None
+        self.transit_modes = None
+        self.mode_heirarchy = None
+        self.sortby = None
+        self.key = None
+        
     def add_geography(self, geog_file, x_col='o_lon', y_col='o_lat', geo_col=None, name='o_taz', data_crs=None, geog_crs=None):
         if not data_crs and self.crs:
             data_crs = self.crs
@@ -55,3 +61,6 @@ class Trips(Base):
                 index=self.dta.index,
                 geometry=self.data[geo_col].map(lambda x: Point(x))
                 )
+                
+    def link_trips(self):
+        raise NotImplementedError()
