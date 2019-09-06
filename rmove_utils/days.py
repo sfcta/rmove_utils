@@ -12,5 +12,5 @@ class Days(Base):
     expected_columns = []
     value_lookup = {}
     
-    def __init__(self, file_name=None, sep='\t', error_level=0):
-        super().__init__(file_name, sep, error_level)
+    def __init__(self, file_name=None, sep='\t', sort_by=None, error_level=0):
+        super().__init__(file_name, sep, sort_by, error_level)

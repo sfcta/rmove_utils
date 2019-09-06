@@ -14,14 +14,13 @@ class Trips(Base):
     crs = None
     
     
-    def __init__(self, file_name=None, sep='\t', error_level=0):
-        super().__init__(file_name, sep, error_level)
+    def __init__(self, file_name=None, sep='\t', sort_by=None, error_level=0):
+        super().__init__(file_name, sep, sort_by, error_level)
         self._geos = {}
         
         self.all_modes = None
         self.transit_modes = None
         self.mode_heirarchy = None
-        self.sortby = None
         self.key = None
         
     def add_geography(self, geog_file, x_col='o_lon', y_col='o_lat', geo_col=None, name='o_taz', data_crs=None, geog_crs=None):

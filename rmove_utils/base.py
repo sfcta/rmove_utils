@@ -12,9 +12,14 @@ class Base(object):
     value_lookup = {}
     descriptions = {}
     error_code_lookup = {}
+    sort_by = None
     
-    def __init__(self, file_name=None, sep='\t', error_level=0):
+    def __init__(self, file_name=None, sep='\t', sort_by=None, error_level=0):
         self.data = pd.read_csv(file_name, sep)
+        if sort_by:
+            self.sort_by = sort_by
+        if self.sort_by:
+            self.data.sort_values(self.sort_by, inplace=True)
         
         if isinstance(self.expected_columns[0], tuple):
             expected_columns = []

@@ -50,8 +50,8 @@ class Households(Base):
                      }
 
     
-    def __init__(self, file_name=None, sep='\t', error_level=0):
-        super().__init__(file_name, sep, error_level)
+    def __init__(self, file_name=None, sep='\t', sort_by=None, error_level=0):
+        super().__init__(file_name, sep, sort_by, error_level)
         self.home_x = None
         self.home_y = None
         
