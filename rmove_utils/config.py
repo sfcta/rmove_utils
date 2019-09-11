@@ -64,6 +64,13 @@ class Config():
         Vehicles.error_code_lookup = Config._read_value_lookup([categorical_variables_key], config_dfs[vkey])[categorical_variables_key]
         Locations.error_code_lookup = Config._read_value_lookup([categorical_variables_key], config_dfs[vkey])[categorical_variables_key]
         
+        Households.sort_by = ['hh_id']
+        Persons.sort_by = ['hh_id','person_id']
+        Trips.sort_by = ['hh_id','person_id','trip_id']
+        Days.sort_by = ['hh_id','person_id','day_num']
+        Vehicles.sort_by = ['hh_id','vehicle_id']
+        Locations.sort_by = ['hh_id','person_id','trip_id','collected_at']
+        
     def _read_expected_columns(dataset, df):
         df = df.loc[df[Config.DATASET_TO_KEY[dataset]].eq(1), Config.FIELD_COLUMNS]
         if len(Config.FIELD_COLUMNS) == 1:
