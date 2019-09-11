@@ -16,5 +16,4 @@ class Locations(Base):
         super().__init__(file_name, sep, sort_by, error_level)
         
     def clean_locations(self):
-        
         raise NotImplementedError()

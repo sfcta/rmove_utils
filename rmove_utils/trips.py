@@ -13,7 +13,6 @@ class Trips(Base):
     value_lookup = {}
     crs = None
     
-    
     def __init__(self, file_name=None, sep='\t', sort_by=None, error_level=0):
         super().__init__(file_name, sep, sort_by, error_level)
         self._geos = {}
