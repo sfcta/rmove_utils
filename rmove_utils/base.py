@@ -31,6 +31,9 @@ class Base(object):
         self._validate_columns(error_level)
         self._validate_values(error_level)
         
+        # make a human readable dataframe
+        self.human_readable = self._human_readable()
+        
         # holds a dict of field name to dataframe summarizing values, as counts, 
         # expanded weights, percent of count, and percent of expanded weight
         self.summary = self.summarize() 
@@ -120,34 +123,42 @@ class Base(object):
         for col in self.data.columns:
             if col in self.value_lookup.keys():
                 continue
-            
-            if not pd.api.types.is_numeric_dtype(self.data.dtypes[col]):
-                continue
                 
-            if append:
-                try:
-                    df = d[col]
-                except:
-                    df = pd.DataFrame(index=[-9999,-1,0,1], columns=cols)
-            else:
-                df = pd.DataFrame(index=[-9999,-1,0,1], columns=cols)
-            
-            if human_readable:
-                try:
-                    df['name'] = df.index.map(lambda x: {-9999:'Missing', -1:'Min', 0:'Mean', 1:'Max'}[x])
-                except:
-                    print(df)
-                
-            df.loc[-9999,'size'] = (1 * pd.isnull(self.data[col])).sum()
-            df.loc[-1,'size'] = self.data[col].min()
-            df.loc[0,'size'] = self.data[col].mean()
-            df.loc[1,'size'] = self.data[col].max()
+            agg = self.data.groupby(col).size()
+            df = pd.DataFrame(index=agg.index, columns=cols)
+            df['size'] = agg
             
             for weight in weights:
-                df.loc[-9999,weight] = (1 * pd.isnull(self.data[col])).sum()
-                df.loc[-1,weight] = (self.data[weight] * self.data[col].min()).sum() / self.data[weight].sum()
-                df.loc[0,weight] = (self.data[weight] * self.data[col].mean()).sum() / self.data[weight].sum()
-                df.loc[1,weight] = (self.data[weight] * self.data[col].max()).sum() / self.data[weight].sum()
+                df[weight] = self.data.groupby(col).agg({weight:'sum'})
+            d[col] = df.copy()
+            
+            # if not pd.api.types.is_numeric_dtype(self.data.dtypes[col]):
+                # continue
+                
+            # if append:
+                # try:
+                    # df = d[col]
+                # except:
+                    # df = pd.DataFrame(index=[-9999,-1,0,1], columns=cols)
+            # else:
+                # df = pd.DataFrame(index=[-9999,-1,0,1], columns=cols)
+            
+            # if human_readable:
+                # try:
+                    # df['name'] = df.index.map(lambda x: {-9999:'Missing', -1:'Min', 0:'Mean', 1:'Max'}[x])
+                # except:
+                    # print(df)
+                
+            # df.loc[-9999,'size'] = (1 * pd.isnull(self.data[col])).sum()
+            # df.loc[-1,'size'] = self.data[col].min()
+            # df.loc[0,'size'] = self.data[col].mean()
+            # df.loc[1,'size'] = self.data[col].max()
+            
+            # for weight in weights:
+                # df.loc[-9999,weight] = (1 * pd.isnull(self.data[col])).sum()
+                # df.loc[-1,weight] = (self.data[weight] * self.data[col].min()).sum() / self.data[weight].sum()
+                # df.loc[0,weight] = (self.data[weight] * self.data[col].mean()).sum() / self.data[weight].sum()
+                # df.loc[1,weight] = (self.data[weight] * self.data[col].max()).sum() / self.data[weight].sum()
         self.summary = d
         return d
     
@@ -160,7 +171,7 @@ class Base(object):
             values.update(self.value_lookup[field])
         raise NotImplementedError()
         
-    def human_readable(self):
+    def _human_readable(self):
         df = self.data.copy()
         for key, values in self.value_lookup.items():
             values.update(self.error_code_lookup)
