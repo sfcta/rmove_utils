@@ -77,12 +77,12 @@ class Config():
             return df[Config.FIELD_COLUMNS[0]].tolist()
         return df.apply(lambda x: tuple(x[c] for c in Config.FIELD_COLUMNS), axis=1).tolist()
         
-    def _read_value_lookup(expected_columns, df):
-        df = df.loc[df['variable'].isin(expected_columns)]
-        return {key: {v['value']: v['label'] for k, v in values.iterrows()} 
-                    for key, values in df.groupby('variable')}
+    def _read_value_lookup(expected_columns, df, variable='variable', value='value', label='label_mtc'):
+        df = df.loc[df[variable].isin(expected_columns)]
+        return {key: {v[value]: v[label] for k, v in values.iterrows()} 
+                    for key, values in df.groupby(variable)}
                     
-    def _read_descriptions(dataset, df):
+    def _read_descriptions(dataset, df, variable='variable', description='description_mtc'):
         df = df.loc[df[Config.DATASET_TO_KEY[dataset]].eq(1), :]
-        return {row['variable']: row['description'] for idx, row in df.iterrows()} 
+        return {row[variable]: row[description] for idx, row in df.iterrows()} 
         

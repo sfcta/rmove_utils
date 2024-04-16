@@ -37,7 +37,7 @@ class Base(object):
         
         # holds a dict of field name to dataframe summarizing values, as counts, 
         # expanded weights, percent of count, and percent of expanded weight
-        self.summary = self.summarize() 
+        #self.summary = self.summarize() 
             
     def _validate_columns(self, error_level):
         for col in self.data.columns:
